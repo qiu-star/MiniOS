@@ -9,4 +9,5 @@ mod init;
 mod lang_items;
 mod sbi;
 mod context;
-mod interrupt;
+mod trap;
+mod clock_interrupt;

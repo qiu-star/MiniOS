@@ -111,11 +111,11 @@ restore_context_kernel:
 .endm
 
 .section .text
-.global __savecontext
-__savecontext:
+.global __changecontext
+__changecontext:
     SAVE_ALL    #保存现场、通用寄存器
     mv a0, sp   #a0是参数寄存器，函数的参数已经在SAVEALL那一步存在栈里了
-    jal handle_interrupt#跳转到handle_interrupt函数
+    jal handle_trap#跳转到handle_trap函数
 .global __ret
 __ret:
     RESTORE_ALL #恢复现场
