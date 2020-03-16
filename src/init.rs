@@ -6,6 +6,8 @@ use riscv::addr::Frame;
 pub fn rust_main() -> ! {
     crate::trap::init_interrupt();
     crate::clock_interrupt::init_clock_interrupt();
+    crate::memory::init();
+    crate::memory::alloc_test();
     println!("{}","------------------WELCOME TO MINIOS------------------");
     // unsafe {
     //     asm!("ebreak"::::"volatile");// put_string("h");

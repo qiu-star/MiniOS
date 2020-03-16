@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 riscv = { path = "crate/riscv", features = ["inline-asm"] }
 spin = "0.4.9"
+buddy_system_allocator = "0.1"
 
 [dependencies.lazy_static]
 version = "1.0"
