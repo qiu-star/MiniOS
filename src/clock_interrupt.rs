@@ -33,7 +33,7 @@ fn get_current_time() -> u64
         //只关注高32位的值，却不关心低32位的原因是：高32位如果发生变化对结果的影响较大
         if tmp == high32
         {
-            return ((high32 as u64)<<32 | (low32 as u64));
+            return (high32 as u64)<<32 | (low32 as u64);
         }
     }
 }

@@ -1,6 +1,5 @@
 
 global_asm!(include_str!("boot/entry.asm")); // 引入 _start
-use riscv::addr::Frame;
 
 #[no_mangle]
 pub fn rust_main() -> ! {

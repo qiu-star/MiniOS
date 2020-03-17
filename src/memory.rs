@@ -1,13 +1,15 @@
-use crate::memory_alloc::{MEMORY_END, MEMORY_START, PAGE_SIZE, KERNEL_HEAP_SIZE, MemoryAllocater, PageTable};
+use crate::memory_alloc::{MEMORY_END, MEMORY_START, PAGE_SIZE, KERNEL_HEAP_SIZE, MemoryAllocater, MemoryWriter};
 use crate::HEAP_ALLOCATOR;
-use lazy_static::lazy_static;
 use spin::Mutex;
+use lazy_static::lazy_static;
 
-// lazy_static!{
-//     static ref MEMORYALLOCATOR: Mutex<MemoryAllocater> = Mutex::new(MemoryAllocater{
-//         pages: [0;(MEMORY_END-MEMORY_START)/PAGE_SIZE],
-//     });
-// }
+static mut MEMORYALLOC: Mutex<MemoryAllocater> = Mutex::new(MemoryAllocater{
+    pages: [0; (MEMORY_END-MEMORY_START)/PAGE_SIZE],
+});
+
+lazy_static! {
+    static ref MEMORYWRITER: Mutex<MemoryWriter> = Mutex::new(MemoryWriter::new());
+}
 
 pub fn init()
 {
@@ -29,21 +31,35 @@ fn init_heap()
 
 pub fn alloc_test()
 {
-    let mut MEMORYALLOC = MemoryAllocater{
-        pages: [0; (MEMORY_END-MEMORY_START)/PAGE_SIZE],
-    };
-    let tmp: PageTable = MEMORYALLOC.alloc(PAGE_SIZE*2+4);
-    print_page_table(tmp);
-}
+    // let mut lock = MEMORYWRITER.lock();
+    // lock.writeU16('a' as u16, MEMORY_START+4);
+    // // let tmp = lock.readU16(MEMORY_START+4);
+    // // println!("{}", tmp);
+    // drop(lock);
 
-fn print_page_table(page_table: PageTable)
-{
-    let v = page_table.page_entries;
-    let len = v.len();
-    println!("Logistic Addr\tPysical Addr");
-    for i in 0..len
-    {
-        let tmp = v[i];
-        println!("{}\t\t{:#x}", tmp.0, tmp.1.start_address().as_usize());
+    let addr = MEMORY_START as *mut u8;
+    unsafe {
+        *addr.offset(4) = 1;
+        *addr.offset(5) = 2;
+    }
+
+    unsafe {
+        {
+            let mut lock = MEMORYALLOC.lock();
+            let mut tmp = lock.alloc(PAGE_SIZE * 2 + 4);
+            tmp.print_page_table();
+            lock.release_index(1);
+            tmp.release(1);
+            tmp.print_page_table();
+            drop(lock);
+        }
+        {
+            let mut lock = MEMORYALLOC.lock();
+            let mut tmp = lock.alloc(PAGE_SIZE * 4);
+            tmp.print_page_table();
+            lock.release(tmp);
+            drop(lock);
+        }
     }
 }
+
