@@ -2,7 +2,7 @@ use crate::context::InterruptFrame;
 use riscv::register::{stvec, sscratch, sstatus};
 use riscv::register::scause::{Trap, Interrupt, Exception};
 use crate::clock_interrupt::{set_next_clockinterrupt, TICK};
-global_asm!(include_str!("asm/interrupt.asm"));
+global_asm!(include_str!("asm/trap.asm"));
 
 pub fn init_interrupt()
 {

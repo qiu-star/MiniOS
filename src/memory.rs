@@ -37,11 +37,11 @@ pub fn alloc_test()
     // // println!("{}", tmp);
     // drop(lock);
 
-    let addr = MEMORY_START as *mut u8;
-    unsafe {
-        *addr.offset(4) = 1;
-        *addr.offset(5) = 2;
-    }
+    // let addr = MEMORY_START as *mut u8;
+    // unsafe {
+    //     *addr.offset(4) = 1;
+    //     *addr.offset(5) = 2;
+    // }
 
     unsafe {
         {
